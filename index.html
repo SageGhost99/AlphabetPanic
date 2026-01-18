@@ -146,7 +146,7 @@
             // Update button
             const btn = document.querySelector(`[data-letter="${letter}"]`);
             if (btn) {
-                btn.className = 'letter-btn bg-black text-white font-bold text-2xl py-4 px-6 rounded-lg cursor-not-allowed';
+                btn.className = 'letter-btn bg-black text-white font-bold text-xl md:text-2xl py-3 md:py-4 px-4 md:px-6 rounded-lg cursor-not-allowed flex items-center justify-center';
                 btn.disabled = true;
             }
             
@@ -162,18 +162,30 @@
         // Update timer display
         function updateTimer() {
             const timerEl = document.getElementById('timer');
-            if (!timerEl) return;
+            const timerDesktopEl = document.getElementById('timer-desktop');
             
             const seconds = Math.ceil(state.timeRemaining);
-            timerEl.textContent = seconds;
             
             // Color coding
+            let colorClass;
             if (seconds > 20) {
-                timerEl.className = 'text-8xl font-black text-green-500';
+                colorClass = 'text-green-500';
             } else if (seconds > 10) {
-                timerEl.className = 'text-8xl font-black text-yellow-500';
+                colorClass = 'text-yellow-500';
             } else {
-                timerEl.className = 'text-8xl font-black text-red-500';
+                colorClass = 'text-red-500';
+            }
+            
+            // Update mobile timer
+            if (timerEl) {
+                timerEl.textContent = seconds;
+                timerEl.className = `text-5xl font-black ${colorClass}`;
+            }
+            
+            // Update desktop timer
+            if (timerDesktopEl) {
+                timerDesktopEl.textContent = seconds;
+                timerDesktopEl.className = `text-8xl font-black ${colorClass}`;
             }
             
             // Add shake effect to main container when <= 10 seconds
@@ -190,8 +202,14 @@
         // Update counter
         function updateCounter() {
             const counterEl = document.getElementById('counter');
+            const counterDesktopEl = document.getElementById('counter-desktop');
+            const count = `${state.clickedLetters.size}/26`;
+            
             if (counterEl) {
-                counterEl.textContent = `${state.clickedLetters.size}/26`;
+                counterEl.textContent = count;
+            }
+            if (counterDesktopEl) {
+                counterDesktopEl.textContent = count;
             }
         }
 
@@ -218,18 +236,18 @@
             
             if (state.screen === 'start') {
                 app.innerHTML = `
-                    <div class="bg-amber-50 rounded-3xl shadow-2xl p-8">
-                        <div class="text-center mb-8">
-                            <h1 class="text-5xl text-red-900">
+                    <div class="bg-amber-50 rounded-3xl shadow-2xl p-6 md:p-8">
+                        <div class="text-center mb-6 md:mb-8">
+                            <h1 class="text-4xl md:text-5xl text-red-900">
                                 ${createTitle('ALPHABET PANIC')}
                             </h1>
                         </div>
                         <div class="text-center">
-                            <p class="text-2xl text-red-900 mb-8 font-bold">Choose a Category:</p>
-                            <div class="space-y-4">
+                            <p class="text-xl md:text-2xl text-red-900 mb-6 md:mb-8 font-bold">Choose a Category:</p>
+                            <div class="space-y-3 md:space-y-4">
                                 ${state.categories.map(cat => `
                                     <button onclick="startGame('${cat}')" 
-                                            class="w-full bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-2xl py-6 px-8 rounded-xl transition transform hover:scale-105">
+                                            class="w-full bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-lg md:text-2xl py-4 md:py-6 px-6 md:px-8 rounded-xl transition transform hover:scale-105">
                                         ${cat}
                                     </button>
                                 `).join('')}
@@ -239,38 +257,52 @@
                 `;
             } else if (state.screen === 'game') {
                 app.innerHTML = `
-                    <div id="main-container" class="bg-amber-50 rounded-3xl shadow-2xl p-8">
+                    <div id="main-container" class="bg-amber-50 rounded-3xl shadow-2xl p-4 md:p-8">
                         <div class="flex justify-end mb-2">
                             <button onclick="playAgain()" 
-                                    class="bg-red-800 hover:bg-red-700 text-amber-50 font-bold text-lg py-3 px-6 rounded-lg transition transform hover:scale-105">
+                                    class="bg-red-800 hover:bg-red-700 text-amber-50 font-bold text-sm md:text-lg py-2 px-4 md:py-3 md:px-6 rounded-lg transition transform hover:scale-105">
                                 Start Over
                             </button>
                         </div>
                         
-                        <div class="text-center mb-6">
-                            <h1 class="text-4xl text-red-900 mb-6">
+                        <div class="text-center mb-4 md:mb-6">
+                            <h1 class="text-3xl md:text-4xl text-red-900 mb-4 md:mb-6">
                                 ${createTitle('ALPHABET PANIC')}
                             </h1>
-                            <h2 class="text-6xl font-black text-red-900 mb-3 tracking-wide">${state.selectedCategory}</h2>
-                            <p class="text-lg text-red-800">Shout words for each letter!</p>
+                            <h2 class="text-4xl md:text-6xl font-black text-red-900 mb-2 md:mb-3 tracking-wide">${state.selectedCategory}</h2>
+                            <p class="text-sm md:text-lg text-red-800">Shout words for each letter!</p>
                         </div>
                         
-                        <div class="flex flex-col lg:flex-row gap-8 items-start">
+                        <div class="flex flex-col lg:flex-row gap-4 md:gap-8 items-start">
+                            <!-- Timer and Stats on top for mobile, right side for desktop -->
+                            <div class="w-full lg:hidden flex gap-3 mb-4">
+                                <div class="flex-1 bg-red-900 rounded-xl p-4 text-center">
+                                    <p class="text-amber-50 text-sm font-bold mb-1">TIME</p>
+                                    <div id="timer" class="text-5xl font-black text-green-500">${Math.ceil(state.timeRemaining)}</div>
+                                </div>
+                                
+                                <div class="flex-1 bg-red-900 rounded-xl p-4 text-center">
+                                    <p class="text-amber-50 text-sm font-bold mb-1">LETTERS</p>
+                                    <div id="counter" class="text-4xl font-black text-amber-50">${state.clickedLetters.size}/26</div>
+                                </div>
+                            </div>
+                            
                             <div class="flex-1">
-                                <div id="game-board" class="grid grid-cols-7 gap-2">
+                                <div id="game-board" class="grid grid-cols-7 gap-1 md:gap-2">
                                     ${generateAlphabet()}
                                 </div>
                             </div>
                             
-                            <div class="lg:w-64 flex flex-col gap-6">
+                            <!-- Timer and Stats on right for desktop -->
+                            <div class="hidden lg:flex lg:w-64 flex-col gap-6">
                                 <div class="bg-red-900 rounded-2xl p-6 text-center">
                                     <p class="text-amber-50 text-xl font-bold mb-2">TIME</p>
-                                    <div id="timer" class="text-8xl font-black text-green-500">${Math.ceil(state.timeRemaining)}</div>
+                                    <div id="timer-desktop" class="text-8xl font-black text-green-500">${Math.ceil(state.timeRemaining)}</div>
                                 </div>
                                 
                                 <div class="bg-red-900 rounded-2xl p-6 text-center">
                                     <p class="text-amber-50 text-xl font-bold mb-2">LETTERS</p>
-                                    <div id="counter" class="text-6xl font-black text-amber-50">${state.clickedLetters.size}/26</div>
+                                    <div id="counter-desktop" class="text-6xl font-black text-amber-50">${state.clickedLetters.size}/26</div>
                                 </div>
                             </div>
                         </div>
@@ -281,29 +313,29 @@
                 const missingLetters = getMissingLetters();
                 
                 app.innerHTML = `
-                    <div class="bg-amber-50 rounded-3xl shadow-2xl p-8">
-                        <div class="flex flex-col lg:flex-row gap-8 items-start">
-                            <div class="flex-1 text-center">
-                                <div class="mb-6">
-                                    <h1 class="text-4xl text-red-900">
+                    <div class="bg-amber-50 rounded-3xl shadow-2xl p-6 md:p-8">
+                        <div class="flex flex-col lg:flex-row gap-6 md:gap-8 items-start">
+                            <div class="flex-1 text-center w-full">
+                                <div class="mb-4 md:mb-6">
+                                    <h1 class="text-3xl md:text-4xl text-red-900">
                                         ${createTitle('ALPHABET PANIC')}
                                     </h1>
                                 </div>
                                 
-                                <h2 class="text-5xl mb-8 font-black ${state.won ? 'text-green-600' : 'text-red-600'}">
+                                <h2 class="text-4xl md:text-5xl mb-6 md:mb-8 font-black ${state.won ? 'text-green-600' : 'text-red-600'}">
                                     ${state.won ? 'YOU WIN! 🎉' : 'TIME\'S UP! ⏰'}
                                 </h2>
                                 
                                 <button onclick="playAgain()" 
-                                        class="bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-3xl py-6 px-12 rounded-xl transition transform hover:scale-105">
+                                        class="bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-2xl md:text-3xl py-4 md:py-6 px-8 md:px-12 rounded-xl transition transform hover:scale-105">
                                     Play Again
                                 </button>
                             </div>
                             
-                            <div class="lg:w-80">
-                                <div class="bg-red-900 text-amber-50 rounded-2xl p-8">
-                                    <h3 class="text-3xl font-bold mb-4">Game Stats</h3>
-                                    <div class="space-y-3 text-lg">
+                            <div class="w-full lg:w-80">
+                                <div class="bg-red-900 text-amber-50 rounded-2xl p-6 md:p-8">
+                                    <h3 class="text-2xl md:text-3xl font-bold mb-3 md:mb-4">Game Stats</h3>
+                                    <div class="space-y-2 md:space-y-3 text-base md:text-lg">
                                         <p><span class="font-bold">Category:</span> ${state.selectedCategory}</p>
                                         <p><span class="font-bold">Letters Completed:</span> ${state.clickedLetters.size}/26</p>
                                         <p><span class="font-bold">Time Remaining:</span> ${Math.ceil(state.timeRemaining)}s</p>
@@ -320,9 +352,13 @@
 
         // Create title with rotating letters
         function createTitle(text) {
-            return text.split('').map(char => 
-                char === ' ' ? ' ' : `<span class="title-letter">${char}</span>`
-            ).join('');
+            const words = text.split(' ');
+            return words.map(word => {
+                const letters = word.split('').map(char => 
+                    `<span class="title-letter">${char}</span>`
+                ).join('');
+                return `<span class="inline-block">${letters}</span>`;
+            }).join(' ');
         }
 
         // Generate alphabet buttons
@@ -331,8 +367,8 @@
             return letters.map(letter => {
                 const isClicked = state.clickedLetters.has(letter);
                 const btnClass = isClicked 
-                    ? 'letter-btn bg-black text-white font-bold text-2xl py-4 px-6 rounded-lg cursor-not-allowed'
-                    : 'letter-btn bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-2xl py-4 px-6 rounded-lg cursor-pointer';
+                    ? 'letter-btn bg-black text-white font-bold text-xl md:text-2xl py-3 md:py-4 px-4 md:px-6 rounded-lg cursor-not-allowed flex items-center justify-center'
+                    : 'letter-btn bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-xl md:text-2xl py-3 md:py-4 px-4 md:px-6 rounded-lg cursor-pointer flex items-center justify-center';
                 
                 return `<button 
                     data-letter="${letter}"
