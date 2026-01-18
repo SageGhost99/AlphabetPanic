@@ -1,298 +1,358 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alphabet Panic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .game-title {
-      font-family: 'Arial Black', 'Arial Bold', sans-serif;
-      font-weight: 900;
-      font-size: 4rem;
-      background: linear-gradient(45deg, #7f1d1d, #dc2626, #f59e0b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 4px;
-      display: flex;
-      justify-content: center;
-      gap: 2px;
-    }
-    .game-title span:nth-child(odd) {
-      transform: rotate(-8deg);
-      display: inline-block;
-    }
-    .game-title span:nth-child(even) {
-      transform: rotate(8deg);
-      display: inline-block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alphabet Panic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #450a0a, #7f1d1d);
+            min-height: 100vh;
+        }
+        .title-letter {
+            display: inline-block;
+            font-family: 'Arial Black', sans-serif;
+            font-weight: 900;
+        }
+        .title-letter:nth-child(odd) {
+            transform: rotate(-8deg);
+        }
+        .title-letter:nth-child(even) {
+            transform: rotate(8deg);
+        }
+        .letter-btn {
+            transition: all 0.2s;
+        }
+        .letter-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+        }
+        .letter-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateX(2px); }
+        }
+        .shake {
+            animation: shake 0.5s infinite;
+        }
+    </style>
 </head>
-<body>
-  <div id="app"></div>
+<body class="flex items-center justify-center p-4">
+    <div id="app" class="w-full max-w-6xl"></div>
 
-  <script>
-    const game = {
-      categories: [
-        'Foods', 'Fruits or vegetables', 'Animals', 'Things you find in a kitchen',
-        'Things in a backpack', 'Things you plug in', 'Things that are cold',
-        'Things that are loud', 'Things you can sit on', 'Things you would bring on a road trip',
-        'TV characters', 'Movie characters', 'Famous fictional villains', 'Superpowers',
-        'Famous couples', 'Animated characters', 'Internet slang',
-        'Fast food restaurants', 'Characters from a 2000s movie', 'Characters you would trust in a crisis',
-        'Song titles', 'Band or artist names', 'Memes', 'Songs you scream in the car',
-        'Songs that make you emotional', 'Album titles', 'Music-related words',
-        'Concert essentials', 'Things you hear at a concert', 'Musical instruments',
-        'Characters from Stranger Things', 'Characters from Twilight', 'Characters from a Video Game',
-        'Movie titles', 'Characters from Star Wars', 'Characters from a superhero universe',
-        'TV show titles', 'Fictional towns', 'Fictional creatures', 'Fictional weapons',
-        'Common excuses', 'Things people say when late', 'Things you say when nervous',
-        'Text messages you regret sending', 'Catchphrases', 'Internet terms',
-        'Words that sound fake', 'Words that feel aggressive', 'Compliments',
-        'Insults that are not swearing',
-        'Chores', 'Household items', 'Things that break easily', 'Things that are annoying',
-        'Things people lose', 'Things you forget to buy', 'Things you procrastinate',
-        'Things that smell good', 'Things that smell bad', 'Things that cause arguments',
-        'Cities', 'Countries', 'Vacation activities', 'Tourist attractions',
-        'Places you would avoid', 'Places you would nap', 'Places you would get lost',
-        'Types of stores', 'Restaurants or food places', 'Places open late',
-        'Red flags', 'Green flags', 'Things that should be illegal', 'Things that feel illegal',
-        'Disney Princesses', 'Things that are underrated', 'Things that cause chaos',
-        'Things that escalate quickly', 'Things that ruin a good day', 'Disney Movies',
-        'Emotions', 'Personality traits', 'Things you would cancel plans for', 'Spongebob Phrases',
-        'Fears', 'Dreams', 'Things that feel nostalgic', 'Things that feel powerful',
-        'Things that feel comforting', 'Things that feel unhinged',
-        'Things that make no sense', 'Things you should not Google', 'Things that give you the ick',
-        'Things that are unexpectedly scary', 'Things that feel dramatic', 'Things that are embarrassing',
-        'Things people lie about', 'Things you pretend to like', 'Things you judge silently',
-        'Literally anything'
-      ],
-      alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
-      screen: 'start',
-      options: [],
-      category: '',
-      clicked: new Set(),
-      time: 60,
-      active: false,
-      start: null,
-      end: null,
-      timer: null
-    };
+    <script>
+        // Game state
+        let state = {
+            screen: 'start',
+            categories: [],
+            selectedCategory: '',
+            clickedLetters: new Set(),
+            timeRemaining: 60,
+            timerInterval: null,
+            gameStartTime: null,
+            gameEndTime: null
+        };
 
-    function shuffle(arr) {
-      const copy = arr.slice();
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
+        // 100+ categories
+        const allCategories = [
+            "Animals", "Foods", "Fruits", "Vegetables", "Snacks", "Drinks", "Desserts",
+            "Things in a Kitchen", "Things You Wear", "Things in a Backpack", "Things in a Car", 
+            "Things You Plug In", "Things That Are Cold", "Things That Are Loud", "Things You Sit On", 
+            "Things That Smell Good", "Christmas Things", "Christmas Movies", "Halloween Costumes", 
+            "Halloween Characters", "Holiday Foods", "Holiday Decorations", "Disney Princesses", 
+            "Disney Villains", "Disney Movie Titles", "Disney Sidekick Characters", "Disney Characters",
+            "Talking Animals (any movie or show)", "The Office Quotes", "SpongeBob Phrases", 
+            "Shrek Quotes", "Toy Story Quotes", "Movie Titles", "Animated Movie Titles", 
+            "Movie Quotes", "TV Show Titles", "Sitcom Quotes", "Song Titles", "One-Word Song Titles",
+            "Songs with a Color in the Title", "Songs with a Name in the Title", 
+            "Songs People Sing at Parties", "Band Names", "Music Genres",
+            "Soda Brands", "Car Brands", "Fast Food Restaurants", "Snack Brands", 
+            "Clothing Brands", "Shoe Brands", "Toy Brands", "Video Game Titles", 
+            "Video Game Characters", "Board Games", "Cities", "Countries", "Vacation Destinations",
+            "Restaurants or Food Places", "Tools", "Colors", "Furniture", "Household Items",
+            "Things That Are Annoying", "Things People Argue About", "Things That Ruin a Good Day",
+            "Things People Complain About", "Names", "Words", "Phrases", "Catchphrases",
+            "Things You See Every Day", "Things You Use Daily", "Things You'd Bring on a Trip",
+            "Literally Anything", "Types of Vehicles", "Sports", "Musical Instruments",
+            "Body Parts", "Plants/Flowers", "Occupations", "School Supplies", "Weather Phenomena",
+            "Emotions", "Beverages", "TV Shows", "Books", "Celebrities", "Historical Figures",
+            "Superheroes", "Apps", "Brands", "US States", "Spices", "Pizza Toppings",
+            "Ice Cream Flavors", "Breakfast Foods", "Candy/Chocolate", "Things in a Bathroom",
+            "Things in a Bedroom", "Things in a Garage", "Things at a Beach", "Things at a Park",
+            "Things in Space", "Things Underground", "Birds", "Fish", "Insects", "Reptiles",
+            "Mammals", "Dog Breeds", "Cat Breeds", "Types of Trees", "Flowers", "Herbs",
+            "Things That Are Red", "Things That Are Blue", "Things That Fly", "Things That Swim",
+            "Things That Are Hot", "Things That Are Soft", "Things That Are Hard", "Things That Stink",
+            "School Subjects", "College Majors", "Languages", "Hobbies", "Dance Styles",
+            "Cartoon Characters", "Things at a Wedding", "Things at a Birthday Party",
+            "Holiday Traditions", "Christmas Songs", "Types of Shoes", "Types of Hats",
+            "Accessories", "Hairstyles", "Makeup Items", "Office Supplies", "Electronics",
+            "Household Appliances", "Types of Stores", "Restaurant Types", "Cooking Methods",
+            "Kitchen Utensils", "Cleaning Supplies", "Things Made of Wood", "Things Made of Metal",
+            "Things Made of Plastic", "Things with Wheels", "Things with Buttons"
+        ];
 
-    function init() {
-      game.options = shuffle(game.categories).slice(0, 3);
-    }
-
-    function startGame(idx) {
-      game.category = game.options[idx];
-      game.screen = 'game';
-      game.time = 60;
-      game.clicked = new Set();
-      game.active = true;
-      game.start = Date.now();
-      render();
-      startTimer();
-    }
-
-    function startTimer() {
-      if (game.timer) clearInterval(game.timer);
-      game.timer = setInterval(() => {
-        if (!game.active || game.time <= 0) {
-          clearInterval(game.timer);
-          return;
+        // Initialize app
+        function init() {
+            state.categories = shuffleArray([...allCategories]).slice(0, 3);
+            render();
         }
-        game.time -= 0.1;
-        if (game.time <= 0) {
-          game.time = 0;
-          game.active = false;
-          game.end = Date.now();
-          game.screen = 'end';
-          render();
-        } else {
-          updateTimer();
+
+        // Shuffle array
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
-      }, 100);
-    }
 
-    function updateTimer() {
-      const el = document.getElementById('timer');
-      if (el) {
-        const t = Math.ceil(game.time);
-        el.textContent = t;
-        const color = game.time > 20 ? 'text-green-500' : game.time > 10 ? 'text-yellow-500' : 'text-red-500';
-        el.className = 'text-8xl font-bold transition-colors ' + color;
-      }
-    }
-
-    function clickLetter(letter) {
-      if (!game.active || game.clicked.has(letter)) return;
-      game.clicked.add(letter);
-      game.time += 3;
-      
-      const btn = document.getElementById('btn-' + letter);
-      if (btn) {
-        btn.className = 'aspect-square text-3xl font-bold rounded-xl transition-all transform bg-green-500 text-white scale-95 cursor-not-allowed';
-        btn.disabled = true;
-      }
-      
-      const counter = document.getElementById('counter');
-      if (counter) {
-        counter.textContent = 'Letters Clicked: ' + game.clicked.size + ' / 26';
-      }
-      
-      if (game.clicked.size === 26) {
-        game.active = false;
-        game.end = Date.now();
-        game.screen = 'end';
-        clearInterval(game.timer);
-        render();
-      }
-    }
-
-    function restart() {
-      game.options = shuffle(game.categories).slice(0, 3);
-      game.screen = 'start';
-      game.clicked = new Set();
-      game.time = 60;
-      game.active = false;
-      if (game.timer) clearInterval(game.timer);
-      render();
-    }
-
-    function renderStart() {
-      let h = '<div class="min-h-screen bg-gradient-to-br from-red-950 to-red-900 flex items-center justify-center p-8">';
-      h += '<div class="bg-amber-50 rounded-3xl shadow-2xl p-12 max-w-2xl w-full">';
-      h += '<div class="game-title text-center mb-4">';
-      'ALPHABET PANIC'.split('').forEach(letter => {
-        if (letter === ' ') {
-          h += '<span style="width: 20px;"></span>';
-        } else {
-          h += '<span>' + letter + '</span>';
+        // Start game
+        function startGame(category) {
+            state.selectedCategory = category;
+            state.screen = 'game';
+            state.clickedLetters = new Set();
+            state.timeRemaining = 60;
+            state.gameStartTime = Date.now();
+            state.gameEndTime = null;
+            
+            render();
+            
+            // Start timer (updates every 100ms)
+            state.timerInterval = setInterval(() => {
+                state.timeRemaining -= 0.1;
+                
+                if (state.timeRemaining <= 0) {
+                    state.timeRemaining = 0;
+                    endGame(false);
+                    return;
+                }
+                
+                updateTimer();
+            }, 100);
         }
-      });
-      h += '</div>';
-      h += '<p class="text-center text-gray-600 mb-8 text-lg leading-relaxed">';
-      h += 'Race against the clock! Shout answers out loud for each letter that fit the category. ';
-      h += 'Click the letter when it is used - each click adds 3 seconds. ';
-      h += 'Take turns, or race as a team. Get all 26 letters before time runs out!';
-      h += '</p>';
-      h += '<div class="border-t border-gray-200 pt-8">';
-      h += '<h2 class="text-2xl font-semibold text-center mb-6 text-gray-700">Choose Your Category</h2>';
-      h += '<div class="space-y-4">';
-      
-      for (let i = 0; i < game.options.length; i++) {
-        h += '<button onclick="startGame(' + i + ')" ';
-        h += 'class="w-full bg-gradient-to-r from-red-950 to-red-900 text-amber-50 text-2xl font-bold py-6 rounded-xl hover:from-red-900 hover:to-red-800 transform hover:scale-105 transition shadow-lg">';
-        h += game.options[i];
-        h += '</button>';
-      }
-      
-      h += '</div></div></div></div>';
-      return h;
-    }
 
-    function renderGame() {
-      let h = '<div class="min-h-screen bg-gradient-to-br from-red-950 to-red-900 p-8">';
-      h += '<div class="max-w-7xl mx-auto">';
-      h += '<div class="bg-amber-50 rounded-2xl shadow-xl p-6 mb-8">';
-      h += '<h2 class="text-4xl font-bold text-center text-gray-800">';
-      h += 'Category: <span class="text-red-950">' + game.category + '</span>';
-      h += '</h2></div>';
-      
-      h += '<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">';
-      h += '<div class="lg:col-span-2 bg-amber-50 rounded-2xl shadow-xl p-8">';
-      h += '<div class="grid grid-cols-7 gap-3">';
-      
-      for (let i = 0; i < game.alphabet.length; i++) {
-        const letter = game.alphabet[i];
-        const clicked = game.clicked.has(letter);
-        const dis = !game.active || clicked ? 'disabled' : '';
-        const cls = clicked 
-          ? 'aspect-square text-3xl font-bold rounded-xl transition-all transform bg-green-500 text-white scale-95 cursor-not-allowed'
-          : 'aspect-square text-3xl font-bold rounded-xl transition-all transform bg-gradient-to-br from-red-950 to-red-900 text-amber-50 hover:scale-110 hover:shadow-lg active:scale-95';
-        
-        h += '<button id="btn-' + letter + '" onclick="clickLetter(\'' + letter + '\')" ' + dis + ' class="' + cls + '">';
-        h += letter + '</button>';
-      }
-      
-      h += '</div>';
-      h += '<div class="mt-6 text-center">';
-      h += '<p id="counter" class="text-2xl font-semibold text-gray-700">';
-      h += 'Letters Clicked: ' + game.clicked.size + ' / 26</p></div></div>';
-      
-      h += '<div class="bg-amber-50 rounded-2xl shadow-xl p-8 flex flex-col items-center justify-center">';
-      h += '<h3 class="text-2xl font-semibold text-gray-700 mb-4">Time Left</h3>';
-      const tc = game.time > 20 ? 'text-green-500' : game.time > 10 ? 'text-yellow-500' : 'text-red-500';
-      h += '<div id="timer" class="text-8xl font-bold ' + tc + '">' + Math.ceil(game.time) + '</div>';
-      h += '<p class="text-gray-500 mt-4 text-lg">seconds</p>';
-      h += '</div></div></div></div>';
-      
-      return h;
-    }
+        // Click letter
+        function clickLetter(letter) {
+            if (state.clickedLetters.has(letter) || state.screen !== 'game') return;
+            
+            state.clickedLetters.add(letter);
+            state.timeRemaining += 3;
+            
+            // Update button
+            const btn = document.querySelector(`[data-letter="${letter}"]`);
+            if (btn) {
+                btn.className = 'letter-btn bg-black text-white font-bold text-2xl py-4 px-6 rounded-lg cursor-not-allowed';
+                btn.disabled = true;
+            }
+            
+            // Update counter
+            updateCounter();
+            
+            // Check win condition
+            if (state.clickedLetters.size === 26) {
+                endGame(true);
+            }
+        }
 
-    function renderEnd() {
-      const won = game.clicked.size === 26;
-      const dur = ((game.end - game.start) / 1000).toFixed(1);
-      
-      let h = '<div class="min-h-screen bg-gradient-to-br from-red-950 to-red-900 flex items-center justify-center p-8">';
-      h += '<div class="bg-amber-50 rounded-3xl shadow-2xl p-12 max-w-2xl w-full">';
-      h += '<h1 class="text-6xl font-bold text-center mb-8 ' + (won ? 'text-green-600' : 'text-red-600') + '">';
-      h += won ? '🎉 You Won! 🎉' : '⏰ Time\'s Up! ⏰';
-      h += '</h1>';
-      
-      h += '<div class="bg-gray-50 rounded-xl p-8 mb-8">';
-      h += '<h2 class="text-3xl font-semibold text-center mb-6 text-gray-800">Game Stats</h2>';
-      h += '<div class="space-y-4">';
-      h += '<div class="flex justify-between text-xl">';
-      h += '<span class="text-gray-600">Category:</span>';
-      h += '<span class="font-bold text-red-950">' + game.category + '</span></div>';
-      h += '<div class="flex justify-between text-xl">';
-      h += '<span class="text-gray-600">Letters Completed:</span>';
-      h += '<span class="font-bold text-gray-800">' + game.clicked.size + ' / 26</span></div>';
-      h += '<div class="flex justify-between text-xl">';
-      h += '<span class="text-gray-600">Time Remaining:</span>';
-      h += '<span class="font-bold text-gray-800">' + Math.ceil(game.time) + ' seconds</span></div>';
-      h += '<div class="flex justify-between text-xl">';
-      h += '<span class="text-gray-600">Game Duration:</span>';
-      h += '<span class="font-bold text-gray-800">' + dur + ' seconds</span></div>';
-      
-      if (!won) {
-        h += '<div class="flex justify-between text-xl">';
-        h += '<span class="text-gray-600">Missing Letters:</span>';
-        h += '<span class="font-bold text-red-600">' + (26 - game.clicked.size) + '</span></div>';
-      }
-      
-      h += '</div></div>';
-      h += '<button onclick="restart()" ';
-      h += 'class="w-full bg-gradient-to-r from-red-950 to-red-900 text-amber-50 text-2xl font-bold py-6 rounded-xl hover:from-red-900 hover:to-red-800 transform hover:scale-105 transition shadow-lg flex items-center justify-center gap-3">';
-      h += '↻ Play Again</button></div></div>';
-      
-      return h;
-    }
+        // Update timer display
+        function updateTimer() {
+            const timerEl = document.getElementById('timer');
+            if (!timerEl) return;
+            
+            const seconds = Math.ceil(state.timeRemaining);
+            timerEl.textContent = seconds;
+            
+            // Color coding
+            if (seconds > 20) {
+                timerEl.className = 'text-8xl font-black text-green-500';
+            } else if (seconds > 10) {
+                timerEl.className = 'text-8xl font-black text-yellow-500';
+            } else {
+                timerEl.className = 'text-8xl font-black text-red-500';
+            }
+            
+            // Add shake effect to main container when <= 10 seconds
+            const mainContainer = document.getElementById('main-container');
+            if (mainContainer) {
+                if (seconds <= 10) {
+                    mainContainer.classList.add('shake');
+                } else {
+                    mainContainer.classList.remove('shake');
+                }
+            }
+        }
 
-    function render() {
-      const app = document.getElementById('app');
-      if (game.screen === 'start') {
-        app.innerHTML = renderStart();
-      } else if (game.screen === 'game') {
-        app.innerHTML = renderGame();
-      } else if (game.screen === 'end') {
-        app.innerHTML = renderEnd();
-      }
-    }
+        // Update counter
+        function updateCounter() {
+            const counterEl = document.getElementById('counter');
+            if (counterEl) {
+                counterEl.textContent = `${state.clickedLetters.size}/26`;
+            }
+        }
 
-    init();
-    render();
-  </script>
+        // End game
+        function endGame(won) {
+            clearInterval(state.timerInterval);
+            state.gameEndTime = Date.now();
+            state.screen = 'end';
+            state.won = won;
+            render();
+        }
+
+        // Play again
+        function playAgain() {
+            state.categories = shuffleArray([...allCategories]).slice(0, 3);
+            state.screen = 'start';
+            state.clickedLetters = new Set();
+            render();
+        }
+
+        // Render
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (state.screen === 'start') {
+                app.innerHTML = `
+                    <div class="bg-amber-50 rounded-3xl shadow-2xl p-8">
+                        <div class="text-center mb-8">
+                            <h1 class="text-5xl text-red-900">
+                                ${createTitle('ALPHABET PANIC')}
+                            </h1>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl text-red-900 mb-8 font-bold">Choose a Category:</p>
+                            <div class="space-y-4">
+                                ${state.categories.map(cat => `
+                                    <button onclick="startGame('${cat}')" 
+                                            class="w-full bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-2xl py-6 px-8 rounded-xl transition transform hover:scale-105">
+                                        ${cat}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (state.screen === 'game') {
+                app.innerHTML = `
+                    <div id="main-container" class="bg-amber-50 rounded-3xl shadow-2xl p-8">
+                        <div class="flex justify-end mb-2">
+                            <button onclick="playAgain()" 
+                                    class="bg-red-800 hover:bg-red-700 text-amber-50 font-bold text-lg py-3 px-6 rounded-lg transition transform hover:scale-105">
+                                Start Over
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mb-6">
+                            <h1 class="text-4xl text-red-900 mb-6">
+                                ${createTitle('ALPHABET PANIC')}
+                            </h1>
+                            <h2 class="text-6xl font-black text-red-900 mb-3 tracking-wide">${state.selectedCategory}</h2>
+                            <p class="text-lg text-red-800">Shout words for each letter!</p>
+                        </div>
+                        
+                        <div class="flex flex-col lg:flex-row gap-8 items-start">
+                            <div class="flex-1">
+                                <div id="game-board" class="grid grid-cols-7 gap-2">
+                                    ${generateAlphabet()}
+                                </div>
+                            </div>
+                            
+                            <div class="lg:w-64 flex flex-col gap-6">
+                                <div class="bg-red-900 rounded-2xl p-6 text-center">
+                                    <p class="text-amber-50 text-xl font-bold mb-2">TIME</p>
+                                    <div id="timer" class="text-8xl font-black text-green-500">${Math.ceil(state.timeRemaining)}</div>
+                                </div>
+                                
+                                <div class="bg-red-900 rounded-2xl p-6 text-center">
+                                    <p class="text-amber-50 text-xl font-bold mb-2">LETTERS</p>
+                                    <div id="counter" class="text-6xl font-black text-amber-50">${state.clickedLetters.size}/26</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (state.screen === 'end') {
+                const duration = ((state.gameEndTime - state.gameStartTime) / 1000).toFixed(1);
+                const missingLetters = getMissingLetters();
+                
+                app.innerHTML = `
+                    <div class="bg-amber-50 rounded-3xl shadow-2xl p-8">
+                        <div class="flex flex-col lg:flex-row gap-8 items-start">
+                            <div class="flex-1 text-center">
+                                <div class="mb-6">
+                                    <h1 class="text-4xl text-red-900">
+                                        ${createTitle('ALPHABET PANIC')}
+                                    </h1>
+                                </div>
+                                
+                                <h2 class="text-5xl mb-8 font-black ${state.won ? 'text-green-600' : 'text-red-600'}">
+                                    ${state.won ? 'YOU WIN! 🎉' : 'TIME\'S UP! ⏰'}
+                                </h2>
+                                
+                                <button onclick="playAgain()" 
+                                        class="bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-3xl py-6 px-12 rounded-xl transition transform hover:scale-105">
+                                    Play Again
+                                </button>
+                            </div>
+                            
+                            <div class="lg:w-80">
+                                <div class="bg-red-900 text-amber-50 rounded-2xl p-8">
+                                    <h3 class="text-3xl font-bold mb-4">Game Stats</h3>
+                                    <div class="space-y-3 text-lg">
+                                        <p><span class="font-bold">Category:</span> ${state.selectedCategory}</p>
+                                        <p><span class="font-bold">Letters Completed:</span> ${state.clickedLetters.size}/26</p>
+                                        <p><span class="font-bold">Time Remaining:</span> ${Math.ceil(state.timeRemaining)}s</p>
+                                        <p><span class="font-bold">Total Duration:</span> ${duration}s</p>
+                                        ${!state.won ? `<p><span class="font-bold">Missing Letters:</span> ${missingLetters}</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Create title with rotating letters
+        function createTitle(text) {
+            return text.split('').map(char => 
+                char === ' ' ? ' ' : `<span class="title-letter">${char}</span>`
+            ).join('');
+        }
+
+        // Generate alphabet buttons
+        function generateAlphabet() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            return letters.map(letter => {
+                const isClicked = state.clickedLetters.has(letter);
+                const btnClass = isClicked 
+                    ? 'letter-btn bg-black text-white font-bold text-2xl py-4 px-6 rounded-lg cursor-not-allowed'
+                    : 'letter-btn bg-red-900 hover:bg-red-800 text-amber-50 font-bold text-2xl py-4 px-6 rounded-lg cursor-pointer';
+                
+                return `<button 
+                    data-letter="${letter}"
+                    onclick="clickLetter('${letter}')" 
+                    class="${btnClass}"
+                    ${isClicked ? 'disabled' : ''}>
+                    ${letter}
+                </button>`;
+            }).join('');
+        }
+
+        // Get missing letters
+        function getMissingLetters() {
+            const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            const missing = allLetters.filter(l => !state.clickedLetters.has(l));
+            return missing.join(', ');
+        }
+
+        // Initialize on load
+        init();
+    </script>
 </body>
 </html>
