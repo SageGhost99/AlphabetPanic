@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.3">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Alphabet Panic&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.game-title {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: 'Arial Black', 'Arial Bold', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 900;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 4rem;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(45deg, #7f1d1d, #dc2626, #f59e0b);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-webkit-background-clip: text;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-webkit-text-fill-color: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-clip: text;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>letter-spacing: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 2px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.game-title span:nth-child(odd) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transform: rotate(-8deg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.game-title span:nth-child(even) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transform: rotate(8deg);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: inline-block;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="app"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const game = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>categories: [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Foods', 'Fruits or vegetables', 'Animals', 'Things you find in a kitchen',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things in a backpack', 'Things you plug in', 'Things that are cold',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things that are loud', 'Things you can sit on', 'Things you would bring on a road trip',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'TV characters', 'Movie characters', 'Famous fictional villains', 'Superpowers',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Famous couples', 'Animated characters', 'Internet slang',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Fast food restaurants', 'Characters from a 2000s movie', 'Characters you would trust in a crisis',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Song titles', 'Band or artist names', 'Memes', 'Songs you scream in the car',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Songs that make you emotional', 'Album titles', 'Music-related words',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Concert essentials', 'Things you hear at a concert', 'Musical instruments',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Characters from Stranger Things', 'Characters from Twilight', 'Characters from a Video Game',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Movie titles', 'Characters from Star Wars', 'Characters from a superhero universe',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'TV show titles', 'Fictional towns', 'Fictional creatures', 'Fictional weapons',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Common excuses', 'Things people say when late', 'Things you say when nervous',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Text messages you regret sending', 'Catchphrases', 'Internet terms',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Words that sound fake', 'Words that feel aggressive', 'Compliments',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Insults that are not swearing',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Chores', 'Household items', 'Things that break easily', 'Things that are annoying',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things people lose', 'Things you forget to buy', 'Things you procrastinate',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things that smell good', 'Things that smell bad', 'Things that cause arguments',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Cities', 'Countries', 'Vacation activities', 'Tourist attractions',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Places you would avoid', 'Places you would nap', 'Places you would get lost',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Types of stores', 'Restaurants or food places', 'Places open late',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Red flags', 'Green flags', 'Things that should be illegal', 'Things that feel illegal',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Disney Princesses', 'Things that are underrated', 'Things that cause chaos',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things that escalate quickly', 'Things that ruin a good day', 'Disney Movies',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Emotions', 'Personality traits', 'Things you would cancel plans for', 'Spongebob Phrases',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Fears', 'Dreams', 'Things that feel nostalgic', 'Things that feel powerful',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things that feel comforting', 'Things that feel unhinged',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things that make no sense', 'Things you should not Google', 'Things that give you the ick',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things that are unexpectedly scary', 'Things that feel dramatic', 'Things that are embarrassing',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Things people lie about', 'Things you pretend to like', 'Things you judge silently',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>'Literally anything'</p>
+<p class="p1"><span class="Apple-converted-space">      </span>],</p>
+<p class="p1"><span class="Apple-converted-space">      </span>alphabet: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],</p>
+<p class="p1"><span class="Apple-converted-space">      </span>screen: 'start',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>options: [],</p>
+<p class="p1"><span class="Apple-converted-space">      </span>category: '',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>clicked: new Set(),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>time: 60,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>active: false,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>start: null,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>end: null,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>timer: null</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function shuffle(arr) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const copy = arr.slice();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = copy.length - 1; i &gt; 0; i--) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const j = Math.floor(Math.random() * (i + 1));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>[copy[i], copy[j]] = [copy[j], copy[i]];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return copy;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function init() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.options = shuffle(game.categories).slice(0, 3);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function startGame(idx) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.category = game.options[idx];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.screen = 'game';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.time = 60;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.clicked = new Set();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.active = true;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.start = Date.now();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>startTimer();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function startTimer() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (game.timer) clearInterval(game.timer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.timer = setInterval(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!game.active || game.time &lt;= 0) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>clearInterval(game.timer);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>game.time -= 0.1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (game.time &lt;= 0) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>game.time = 0;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>game.active = false;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>game.end = Date.now();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>game.screen = 'end';</p>
+<p class="p1"><span class="Apple-converted-space">          </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>updateTimer();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}, 100);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateTimer() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const el = document.getElementById('timer');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (el) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const t = Math.ceil(game.time);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>el.textContent = t;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const color = game.time &gt; 20 ? 'text-green-500' : game.time &gt; 10 ? 'text-yellow-500' : 'text-red-500';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>el.className = 'text-8xl font-bold transition-colors ' + color;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function clickLetter(letter) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!game.active || game.clicked.has(letter)) return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.clicked.add(letter);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.time += 3;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const btn = document.getElementById('btn-' + letter);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (btn) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btn.className = 'aspect-square text-3xl font-bold rounded-xl transition-all transform bg-green-500 text-white scale-95 cursor-not-allowed';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btn.disabled = true;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const counter = document.getElementById('counter');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (counter) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>counter.textContent = 'Letters Clicked: ' + game.clicked.size + ' / 26';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (game.clicked.size === 26) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>game.active = false;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>game.end = Date.now();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>game.screen = 'end';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>clearInterval(game.timer);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function restart() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.options = shuffle(game.categories).slice(0, 3);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.screen = 'start';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.clicked = new Set();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.time = 60;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>game.active = false;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (game.timer) clearInterval(game.timer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>render();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderStart() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let h = '&lt;div class="min-h-screen bg-gradient-to-br from-red-950 to-red-900 flex items-center justify-center p-8"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="bg-amber-50 rounded-3xl shadow-2xl p-12 max-w-2xl w-full"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="game-title text-center mb-4"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>'ALPHABET PANIC'.split('').forEach(letter =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (letter === ' ') {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>h += '&lt;span style="width: 20px;"&gt;&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>h += '&lt;span&gt;' + letter + '&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;/div&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;p class="text-center text-gray-600 mb-8 text-lg leading-relaxed"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += 'Race against the clock! Shout answers out loud for each letter that fit the category. ';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += 'Click the letter when it is used - each click adds 3 seconds. ';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += 'Take turns, or race as a team. Get all 26 letters before time runs out!';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;/p&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="border-t border-gray-200 pt-8"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;h2 class="text-2xl font-semibold text-center mb-6 text-gray-700"&gt;Choose Your Category&lt;/h2&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="space-y-4"&gt;';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt; game.options.length; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h += '&lt;button onclick="startGame(' + i + ')" ';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h += 'class="w-full bg-gradient-to-r from-red-950 to-red-900 text-amber-50 text-2xl font-bold py-6 rounded-xl hover:from-red-900 hover:to-red-800 transform hover:scale-105 transition shadow-lg"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h += game.options[i];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h += '&lt;/button&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return h;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderGame() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let h = '&lt;div class="min-h-screen bg-gradient-to-br from-red-950 to-red-900 p-8"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="max-w-7xl mx-auto"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="bg-amber-50 rounded-2xl shadow-xl p-6 mb-8"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;h2 class="text-4xl font-bold text-center text-gray-800"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += 'Category: &lt;span class="text-red-950"&gt;' + game.category + '&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;/h2&gt;&lt;/div&gt;';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="grid grid-cols-1 lg:grid-cols-3 gap-8"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="lg:col-span-2 bg-amber-50 rounded-2xl shadow-xl p-8"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="grid grid-cols-7 gap-3"&gt;';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt; game.alphabet.length; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const letter = game.alphabet[i];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const clicked = game.clicked.has(letter);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const dis = !game.active || clicked ? 'disabled' : '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const cls = clicked<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>? 'aspect-square text-3xl font-bold rounded-xl transition-all transform bg-green-500 text-white scale-95 cursor-not-allowed'</p>
+<p class="p1"><span class="Apple-converted-space">          </span>: 'aspect-square text-3xl font-bold rounded-xl transition-all transform bg-gradient-to-br from-red-950 to-red-900 text-amber-50 hover:scale-110 hover:shadow-lg active:scale-95';</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>h += '&lt;button id="btn-' + letter + '" onclick="clickLetter(\'' + letter + '\')" ' + dis + ' class="' + cls + '"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h += letter + '&lt;/button&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;/div&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="mt-6 text-center"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;p id="counter" class="text-2xl font-semibold text-gray-700"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += 'Letters Clicked: ' + game.clicked.size + ' / 26&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="bg-amber-50 rounded-2xl shadow-xl p-8 flex flex-col items-center justify-center"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;h3 class="text-2xl font-semibold text-gray-700 mb-4"&gt;Time Left&lt;/h3&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const tc = game.time &gt; 20 ? 'text-green-500' : game.time &gt; 10 ? 'text-yellow-500' : 'text-red-500';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div id="timer" class="text-8xl font-bold ' + tc + '"&gt;' + Math.ceil(game.time) + '&lt;/div&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;p class="text-gray-500 mt-4 text-lg"&gt;seconds&lt;/p&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;';</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return h;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderEnd() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const won = game.clicked.size === 26;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const dur = ((game.end - game.start) / 1000).toFixed(1);</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>let h = '&lt;div class="min-h-screen bg-gradient-to-br from-red-950 to-red-900 flex items-center justify-center p-8"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;div class="bg-amber-50 rounded-3xl shadow-2xl p-12 max-w-2xl w-full"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += '&lt;h1 class="text-6xl font-bold text-center mb-8 ' + (won ? 'text-green-600' : 'text-red-600') + '"&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>h += wo</p>
+</body>
+</html>
